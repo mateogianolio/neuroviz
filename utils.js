@@ -124,7 +124,7 @@
 
   g.color = function (x) {
     var t = tanh()(x);
-    if (x < -0.9)
+    if (t < -0.9)
       return '#08519c';
     else if (t < -0.7)
       return '#3182bd';
