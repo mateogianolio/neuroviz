@@ -1,0 +1,99 @@
+*:not(button) {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font: 100%/1.4 Georgia, Times, serif;
+  margin: 0 auto;
+}
+
+body {
+  width: 80%;
+  max-width: 760px;
+  margin: 3rem auto;
+}
+
+code {
+  background: #f6f6f6;
+  border-radius: 2px;
+  padding: 2px;
+}
+
+h1, h2, h3 {
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+div, h1, h2, h3, ul, p {
+  margin-bottom: 1rem;
+}
+
+div {
+  text-align: center;
+}
+
+div:before {
+  display: block;
+  content: attr(data-iterations);
+  font-size: .9rem;
+  color: #aaa;
+}
+
+table {
+  display: inline-table;
+  margin: 1rem;
+}
+
+table:before, table:after {
+  display: block;
+  width: 0;
+  margin-bottom: .5rem;
+  font-size: .8rem;
+  line-height: 1;
+  color: #aaa;
+  content: attr(data-info);
+}
+
+table:after {
+  content: attr(data-activation);
+  margin-top: .5rem;
+  margin-bottom: 0;
+}
+
+table>tr>td {
+  width: 12px;
+  height: 12px;
+  text-indent: -9999px;
+  font-size: 0;
+  border-radius: 3px;
+  transition: background-color .1s;
+}
+
+.blue {
+  color: #08519c;
+}
+
+.red {
+  color: #a50f15;
+}
+
+textarea {
+  padding: .5rem;
+  font-family: monospace;
+  font-size: 1rem;
+  border: none;
+  border-left: 1px solid #eee;
+  border-radius: 4px;
+  background: #fafafa;
+  outline: none;
+}
+
+@media (max-width: 800px) {
+  table {
+    margin-right: 1rem;
+  }
+}

@@ -1,0 +1,182 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>vectorious</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="vectorious-4.3.2.min.js"></script>
+    <script src="math.js"></script>
+    <script src="utils.js"></script>
+  </head>
+  <body>
+    <h1>Visualizing neural networks with matrix heatmaps</h1>
+    <p>
+      Neural networks are a mystery to most of us and this post will try to
+      address that fact by visualizing how the inner structures change during
+      supervised learning using matrix heatmaps.
+    </p>
+    <h2>Activation function</h2>
+    <p>
+      Let us visualize a 5&#215;5 matrix &in; [-1, 1)
+      and see how it responds to a few popular activation functions.
+      A <span class="blue">blue coloured</span> cell indicates a negative value
+      and a <span class="red">red coloured</span> cell indicates a positive value.
+      The darker the colour, the higher the value. A transparent cell indicates
+      a value close to zero.
+    </p>
+    <div class="fig0"></div>
+    <script>
+      var R = Matrix.random(5, 5, 2, -1);
+
+      renderMatrix(R, { container: '.fig0', name: 'input'});
+      renderMatrix(R.map(identity()), { container: '.fig0', name: 'identity'});
+      renderMatrix(R.map(sigmoid()), { container: '.fig0', name: 'sigmoid'});
+      renderMatrix(R.map(softmax()), { container: '.fig0', name: 'softmax'});
+      renderMatrix(R.map(softplus()), { container: '.fig0', name: 'softplus'});
+      renderMatrix(R.map(relu()), { container: '.fig0', name: 'relu'});
+      renderMatrix(R.map(tanh()), { container: '.fig0', name: 'tanh'});
+    </script>
+    <p>
+      An important characteristic of activation functions is that they are
+      differentiable. Below we apply the derivative of the corresponding
+      activation function to the <code>input</code> matrix.
+    </p>
+    <div class="fig1"></div>
+    <script>
+      renderMatrix(R, { container: '.fig1', name: 'input'});
+      renderMatrix(R.map(identity(true)), { container: '.fig1', name: 'identity'});
+      renderMatrix(R.map(sigmoid(true)), { container: '.fig1', name: '\u0394sigmoid'});
+      renderMatrix(R.map(softmax(true)), { container: '.fig1', name: '\u0394softmax'});
+      renderMatrix(R.map(softplus(true)), { container: '.fig1', name: '\u0394softplus'});
+      renderMatrix(R.map(relu(true)), { container: '.fig1', name: '\u0394relu'});
+      renderMatrix(R.map(tanh(true)), { container: '.fig1', name: '\u0394tanh'});
+    </script>
+    <p>
+      Relevant: <a href="https://en.wikipedia.org/wiki/Activation_function">https://en.wikipedia.org/wiki/Activation_function</a>
+    </p>
+    <h2>Regression</h2>
+    <p>
+      We will now model regression
+      by backpropagate errors into an intermediary matrix called <code>syn0</code>.
+      To make it a bit easier to evaluate performance, I set our desired
+      <code>output = -input</code>, so that the algebraic solution
+      to the matrix equation <code>input = syn0 * output</code> conveniently
+      becomes <code>syn0 = -I</code>, where <code>I</code> is
+      the identity matrix.
+    </p>
+    <p>
+      Let's see how our model performs (it's capped at 100 iterations):
+    </p>
+    <div class="fig-linear-regression"></div>
+    <div class="fig-tanh-regression"></div>
+    <script>
+      var y = R
+        .map(function (x) {
+          return -x;
+        });
+
+      start({
+        container: '.fig-linear-regression',
+        showSynapses: true,
+        showDeltas: true,
+        input: R,
+        output: y,
+        alpha: 0.1,
+        iterations: 100,
+        layers: [identity]
+      });
+
+      start({
+        container: '.fig-tanh-regression',
+        showSynapses: true,
+        showDeltas: true,
+        input: R,
+        output: y,
+        alpha: 0.1,
+        iterations: 100,
+        layers: [tanh]
+      });
+    </script>
+    <p>
+      Pretty cool! Most of the time it converges to the correct solution for
+      <code>syn0</code>, but even if it doesn't it will predict the output
+      almost correctly.
+    </p>
+    <h2>Adding hidden layers</h2>
+    <p>
+      The fun part begins! The above regression model can actually be referred to as a neural network
+      without hidden layers. The thing about neural networks is that you are free to mix layers with different
+      activation functions, depending on what you want to achieve.
+    </p>
+    <p>
+      Let's try extending the above tanh-regression with a hidden tanh layer:
+    </p>
+    <div class="fig3"></div>
+    <script>
+      start({
+        container: '.fig3',
+        showDeltas: true,
+        input: R,
+        output: y,
+        alpha: 0.1,
+        iterations: 100,
+        hidden: 4,
+        layers: [tanh, tanh]
+      });
+    </script>
+    <p>
+      As you might have figured out by now, only the <code>identity</code> and <code>tanh</code>
+    activation functions work with negative-valued output. However, it's enough to
+    use these activations at the last layer(s).
+  </p>
+    <div class="fig4"></div>
+    <script>
+      start({
+        container: '.fig4',
+        showDeltas: true,
+        input: R,
+        output: y,
+        alpha: 1,
+        iterations: 500,
+        hidden: 5,
+        layers: [sigmoid, sigmoid, sigmoid, softmax, tanh]
+      });
+    </script>
+    <h2>Experiment on your own</h2>
+    <textarea rows="25" cols="60">
+var X = new Matrix([
+  [0, 1],
+  [1, 1],
+  [1, 0],
+  [0, 0]
+]);
+
+var Y = new Matrix([
+  [0, 0, 1, 1],
+  [1, 1, 1, 1],
+  [1, 1, 0, 0],
+  [0, 0, 0, 0]
+]);
+
+start({
+  container: '.fig5',
+  input: X,
+  showDeltas: false,
+  showSynapses: false,
+  output: Y,
+  alpha: 0.1,
+  iterations: 100,
+  hidden: 8,
+  layers: [relu, relu, softmax]
+});</textarea>
+    <p>
+      <button onclick="document.querySelector('.fig5').innerHTML='';eval(document.querySelector('textarea').value);">
+        Run!
+      </button>
+    </p>
+    <div class="fig5"></div>
+    <p style="text-align: center;">
+      <a href="https://github.com/mateogianolio/vectorious"><img src="vectorious.gif"></a>
+    </p>
+  </body>
+</html>
