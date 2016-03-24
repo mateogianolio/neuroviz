@@ -47,7 +47,7 @@
     <div class="fig1"></div>
     <script>
       renderMatrix(R, { container: '.fig1', name: 'input'});
-      renderMatrix(R.map(identity(true)), { container: '.fig1', name: 'identity'});
+      renderMatrix(R.map(identity(true)), { container: '.fig1', name: '\u0394identity'});
       renderMatrix(R.map(sigmoid(true)), { container: '.fig1', name: '\u0394sigmoid'});
       renderMatrix(R.map(softmax(true)), { container: '.fig1', name: '\u0394softmax'});
       renderMatrix(R.map(softplus(true)), { container: '.fig1', name: '\u0394softplus'});
