@@ -135,7 +135,7 @@
     else if (t < -0.01)
       return '#eff3ff';
     else if (t < 0.01)
-      return 'transparent';
+      return '#fff';
     else if (t < 0.3)
       return '#fee5d9';
     else if (t < 0.5)
