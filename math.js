@@ -30,7 +30,7 @@
   g.tanh = function tanh(ddx) {
     return function (x) {
       return ddx ?
-        1 - Math.pow(x, 2) :
+        1 - Math.pow(tanh()(x), 2) :
         sinh(x) / cosh(x);
     };
   };
@@ -40,8 +40,7 @@
   g.identity = function identity(ddx) {
     return function (x) {
       return ddx ?
-        1 :
-        x;
+        1 : x;
     };
   };
 
@@ -59,9 +58,12 @@
   // f'(x) = f(x) * (1 - f(x))
   g.sigmoid = function sigmoid(ddx) {
     return function (x) {
-      return ddx ?
-        x * (1 - x) :
-        1 / (1 + Math.exp(-x));
+      if (ddx) {
+        var z = sigmoid()(x);
+        return z * (1 - z);
+      }
+
+      return 1 / (1 + Math.exp(-x));
     };
   };
 

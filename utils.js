@@ -106,7 +106,7 @@
         td = tr.querySelector('.c' + j) || document.createElement('td');
         if (!td.className)
           td.className = 'c' + j;
-        td.style.background = color(x);
+        td.style.backgroundColor = color(x);
         td.innerHTML = x;
         td.dataset.x = x;
 

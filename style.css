@@ -70,7 +70,7 @@ table>tr>td {
   text-indent: -9999px;
   font-size: 0;
   border-radius: 3px;
-  transition: background-color .2s;
+  transition: background-color .1s;
 }
 
 .blue {
